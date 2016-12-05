@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "tslint \"src/*.ts\""
   },
   "repository": {
     "type": "git",
