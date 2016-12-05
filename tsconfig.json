@@ -12,7 +12,6 @@
         "noEmitHelpers": true,
         "jsx": "react",
         "outDir": "dist",
-        "declaration": true,
         "experimentalDecorators": true
     }
 }

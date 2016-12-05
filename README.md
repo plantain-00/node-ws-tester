@@ -2,8 +2,29 @@
 
 ### server
 
-`node dist/server.js --message-count-per-second 1 --port 8000 --host localhost --message-length 100 --nouse-idle-notification --expose-gc --max-old-space-size=8192`
+```bash
+node dist/server.js
+ --nouse-idle-notification
+ --expose-gc
+ --max-old-space-size 8192
+ --port 8000
+ --host localhost
+ --message-count-per-second 1
+ --message-length 400
+ --message-count-increase 0
+ --message-length-increase 0
+ --increase-per-second 0
+```
 
 ### client
 
-`node dist/client.js --url ws://localhost:8000 --connection-count 100 --nouse-idle-notification --expose-gc --max-old-space-size=8192`
+```bash
+node dist/client.js
+ --nouse-idle-notification
+ --expose-gc
+ --max-old-space-size 8192
+ --url ws://localhost:8000
+ --connection-count 4000
+ --connection-count-increase 100
+ --increase-per-second 2.1
+```
