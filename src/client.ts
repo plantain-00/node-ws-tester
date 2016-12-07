@@ -46,5 +46,6 @@ setInterval(() => {
     if (timer && errorCount > 0) {
         clearInterval(timer);
     }
-    console.log(`errors: ${errorCount} connections: ${wsArray.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} memory: ${bytes.format(process.memoryUsage().rss)}`);
+    const memory = bytes.format(process.memoryUsage().rss);
+    console.log(`errors: ${errorCount} connections: ${wsArray.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} memory: ${memory}`);
 }, 1000);
