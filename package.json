@@ -18,15 +18,15 @@
   },
   "homepage": "https://github.com/plantain-00/node-ws-tester#readme",
   "dependencies": {
-    "bytes": "^2.4.0",
-    "minimist": "^1.2.0",
-    "ws": "^1.1.1"
+    "bytes": "2.4.0",
+    "minimist": "1.2.0",
+    "ws": "1.1.1"
   },
   "devDependencies": {
-    "@types/bytes": "^2.4.33",
-    "@types/minimist": "^1.1.29",
+    "@types/bytes": "2.4.33",
+    "@types/minimist": "1.1.29",
     "@types/ws": "0.0.37",
-    "tslint": "^4.0.2",
-    "typescript": "^2.0.10"
+    "tslint": "4.0.2",
+    "typescript": "2.1.4"
   }
 }
