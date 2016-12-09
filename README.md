@@ -19,6 +19,7 @@ node dist/server.js
  --message-length-increase 0
  --increase-per-second 0
  --use-protobuf
+ --custom-message
 ```
 
 ### client
