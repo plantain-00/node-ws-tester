@@ -20,10 +20,12 @@
   "dependencies": {
     "bytes": "^2.4.0",
     "minimist": "^1.2.0",
+    "protobufjs": "^6.0.2",
     "ws": "^1.1.1"
   },
   "devDependencies": {
     "@types/bytes": "^2.4.33",
+    "@types/long": "^3.0.31",
     "@types/minimist": "^1.1.29",
     "@types/ws": "0.0.37",
     "tslint": "^4.0.2",
