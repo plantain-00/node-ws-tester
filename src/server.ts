@@ -21,13 +21,14 @@ console.log(`Listening ${host}:${port}.`);
 console.log(`Sending ${bytes.format(messageLength)} message * ${messageCountPerSecond} times per second.`);
 
 function readFile() {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
         fs.readFile("./data.json", (error, data) => {
             if (error) {
                 reject(error);
             } else {
                 try {
-                    resolve(JSON.parse(data.toString()));
+                    const json = JSON.parse(data.toString());
+                    resolve(JSON.stringify(json));
                 } catch (jsonError) {
                     reject(jsonError);
                 }
@@ -37,13 +38,13 @@ function readFile() {
 }
 
 function loadProtobuf(message: any) {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<Buffer>((resolve, reject) => {
         (ProtoBuf.load("./message.proto") as Promise<ProtoBuf.Root>).then(root => {
             const Message = root.lookup("messagePackage.Message") as ProtoBuf.Type;
             if (customMessage) {
-                resolve(Message.encode(message).finish());
+                resolve(Message.encode(message).finish() as any as Buffer);
             } else {
-                resolve(Message.encode({ data: message }).finish());
+                resolve(Message.encode({ data: message }).finish() as any as Buffer);
             }
         }, error => {
             reject(error);
@@ -52,7 +53,7 @@ function loadProtobuf(message: any) {
 }
 
 async function start() {
-    let message: any;
+    let message: string | Buffer;
 
     if (customMessage) {
         console.log(`Using custom message.`);
@@ -77,7 +78,7 @@ async function start() {
     wss.on("connection", ws => {
         const timer = setInterval(() => {
             for (let i = 0; i < messageCountPerSecond; i++) {
-                ws.send(message, error => {
+                ws.send(message, { binary: useProtobuf }, error => {
                     if (error) {
                         errorCount++;
                     } else {

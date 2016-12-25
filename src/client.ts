@@ -21,8 +21,8 @@ function connect(times: number) {
     for (let i = 0; i < times; i++) {
         const ws = new WebSocket(url);
         wsArray.push(ws);
-        ws.on("message", (data, flags) => {
-            messageTotalLength += (data as string).length;
+        ws.on("message", (data: string | Buffer, flags) => {
+            messageTotalLength += data.length;
             messageCount++;
         }).on("error", error => {
             if (error) {
