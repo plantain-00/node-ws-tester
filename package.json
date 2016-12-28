@@ -29,6 +29,7 @@
     "@types/bytes": "2.4.33",
     "@types/long": "3.0.31",
     "@types/minimist": "1.1.29",
+    "@types/uws": "0.0.0",
     "@types/ws": "0.0.37",
     "tslint": "4.0.2",
     "typescript": "2.1.4"

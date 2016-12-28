@@ -8,5 +8,4 @@ export const config = {
     increasePerSecond: 2.1,
     useProtobuf: false, // the message will be converted to protobuf binary(defined in message.proto), then pushed to clients.
     customMessage: false, // the message comes from data.json.
-    uws: true, // use uws rather than ws
 };

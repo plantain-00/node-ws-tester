@@ -1,9 +1,8 @@
-import * as types from "./types";
 import * as bytes from "bytes";
 import * as ProtoBuf from "protobufjs";
 import * as fs from "fs";
 import { config } from "./server.config";
-const WebSocket: types.WebSocketType = config.uws ? require("uws") : require("ws");
+import * as WebSocket from "uws";
 
 console.log(`Listening ${config.host}:${config.port}.`);
 console.log(`Sending ${bytes.format(config.messageLength)} message * ${config.messageCountPerSecond} times per second.`);
