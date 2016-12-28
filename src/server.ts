@@ -1,24 +1,12 @@
-import * as WebSocket from "ws";
-import * as minimist from "minimist";
+import * as types from "./types";
 import * as bytes from "bytes";
 import * as ProtoBuf from "protobufjs";
 import * as fs from "fs";
+import { config } from "./server.config";
+const WebSocket: types.WebSocketType = config.uws ? require("uws") : require("ws");
 
-const argv = minimist(process.argv.slice(2), { "--": true });
-
-const port: number = argv["port"] || 8000;
-const host: string = argv["host"] || "localhost";
-
-let messageCountPerSecond: number = argv["message-count-per-second"] || 1;
-let messageLength: number = argv["message-length"] || 100;
-const messageCountIncrease: number = argv["message-count-increase"] || 0;
-const messageLengthIncrease: number = argv["message-length-increase"] || 0;
-const increasePerSecond: number = argv["increase-per-second"] || 0;
-const useProtobuf: boolean = argv["use-protobuf"];
-const customMessage: boolean = argv["custom-message"];
-
-console.log(`Listening ${host}:${port}.`);
-console.log(`Sending ${bytes.format(messageLength)} message * ${messageCountPerSecond} times per second.`);
+console.log(`Listening ${config.host}:${config.port}.`);
+console.log(`Sending ${bytes.format(config.messageLength)} message * ${config.messageCountPerSecond} times per second.`);
 
 function readFile() {
     return new Promise<string>((resolve, reject) => {
@@ -41,7 +29,7 @@ function loadProtobuf(message: any) {
     return new Promise<Buffer>((resolve, reject) => {
         (ProtoBuf.load("./message.proto") as Promise<ProtoBuf.Root>).then(root => {
             const Message = root.lookup("messagePackage.Message") as ProtoBuf.Type;
-            if (customMessage) {
+            if (config.customMessage) {
                 resolve(Message.encode(message).finish() as any as Buffer);
             } else {
                 resolve(Message.encode({ data: message }).finish() as any as Buffer);
@@ -55,21 +43,21 @@ function loadProtobuf(message: any) {
 async function start() {
     let message: string | Buffer;
 
-    if (customMessage) {
+    if (config.customMessage) {
         console.log(`Using custom message.`);
         message = await readFile();
     } else {
-        message = "a".repeat(messageLength);
+        message = "a".repeat(config.messageLength);
     }
 
-    if (useProtobuf) {
+    if (config.useProtobuf) {
         console.log(`Using protobuf.`);
         message = await loadProtobuf(message);
     }
 
     console.log(message);
 
-    const wss = new WebSocket.Server({ port, host });
+    const wss = new WebSocket.Server({ port: config.port, host: config.host });
 
     let errorCount = 0;
     let messageCount = 0;
@@ -77,12 +65,12 @@ async function start() {
 
     wss.on("connection", ws => {
         const timer = setInterval(() => {
-            for (let i = 0; i < messageCountPerSecond; i++) {
-                ws.send(message, { binary: useProtobuf }, error => {
+            for (let i = 0; i < config.messageCountPerSecond; i++) {
+                ws.send(message, { binary: config.useProtobuf }, error => {
                     if (error) {
                         errorCount++;
                     } else {
-                        messageTotalLength += messageLength;
+                        messageTotalLength += config.messageLength;
                         messageCount++;
                     }
                 });
@@ -98,18 +86,18 @@ async function start() {
     });
 
     let timer: NodeJS.Timer;
-    if (increasePerSecond > 0) {
-        if (messageCountIncrease > 0) {
-            console.log(`Message increase ${messageCountIncrease} times per ${increasePerSecond} second.`);
+    if (config.increasePerSecond > 0) {
+        if (config.messageCountIncrease > 0) {
+            console.log(`Message increase ${config.messageCountIncrease} times per ${config.increasePerSecond} second.`);
             timer = setInterval(() => {
-                messageCountPerSecond += messageCountIncrease;
-            }, 1000 * increasePerSecond);
-        } else if (messageLengthIncrease > 0) {
-            console.log(`Message length ${messageLengthIncrease} times per ${increasePerSecond} second.`);
+                config.messageCountPerSecond += config.messageCountIncrease;
+            }, 1000 * config.increasePerSecond);
+        } else if (config.messageLengthIncrease > 0) {
+            console.log(`Message length ${config.messageLengthIncrease} times per ${config.increasePerSecond} second.`);
             timer = setInterval(() => {
-                messageLength += messageLengthIncrease;
-                message = "a".repeat(messageLength);
-            }, 1000 * increasePerSecond);
+                config.messageLength += config.messageLengthIncrease;
+                message = "a".repeat(config.messageLength);
+            }, 1000 * config.increasePerSecond);
         }
     }
 
@@ -118,7 +106,7 @@ async function start() {
             clearInterval(timer);
         }
         const memory = bytes.format(process.memoryUsage().rss);
-        console.log(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${messageCountPerSecond} ${messageLength} memory: ${memory}`);
+        console.log(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${config.messageCountPerSecond} ${config.messageLength} memory: ${memory}`);
     }, 1000);
 }
 
