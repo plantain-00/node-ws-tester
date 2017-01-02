@@ -1,16 +1,8 @@
-import * as WebSocket from "ws";
-import * as minimist from "minimist";
 import * as bytes from "bytes";
+import { config } from "./client.config";
+import * as WebSocket from "ws";
 
-const argv = minimist(process.argv.slice(2), { "--": true });
-
-const url: string = argv["url"] || "ws://localhost:8000";
-
-const connectionCount: number = argv["connection-count"] || 100;
-const connectionCountIncrease: number = argv["connection-count-increase"] || 0;
-const increasePerSecond: number = argv["increase-per-second"] || 0;
-
-console.log(`Connecting to ${url} with ${connectionCount} times.`);
+console.log(`Connecting to ${config.url} with ${config.connectionCount} times.`);
 
 const wsArray: WebSocket[] = [];
 let errorCount = 0;
@@ -19,10 +11,10 @@ let messageTotalLength = 0;
 
 function connect(times: number) {
     for (let i = 0; i < times; i++) {
-        const ws = new WebSocket(url);
+        const ws = new WebSocket(config.url);
         wsArray.push(ws);
-        ws.on("message", (data, flags) => {
-            messageTotalLength += (data as string).length;
+        ws.on("message", (data: string | Buffer, flags) => {
+            messageTotalLength += data.length;
             messageCount++;
         }).on("error", error => {
             if (error) {
@@ -32,19 +24,20 @@ function connect(times: number) {
     }
 }
 
-connect(connectionCount);
+connect(config.connectionCount);
 
 let timer: NodeJS.Timer;
-if (connectionCountIncrease > 0 && increasePerSecond > 0) {
-    console.log(`Connection increase ${connectionCountIncrease} times per ${increasePerSecond} second.`);
+if (config.connectionCountIncrease > 0 && config.increasePerSecond > 0) {
+    console.log(`Connection increase ${config.connectionCountIncrease} times per ${config.increasePerSecond} second.`);
     timer = setInterval(() => {
-        connect(connectionCountIncrease);
-    }, 1000 * increasePerSecond);
+        connect(config.connectionCountIncrease);
+    }, 1000 * config.increasePerSecond);
 }
 
 setInterval(() => {
     if (timer && errorCount > 0) {
         clearInterval(timer);
     }
-    console.log(`errors: ${errorCount} connections: ${wsArray.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} memory: ${bytes.format(process.memoryUsage().rss)}`);
+    const memory = bytes.format(process.memoryUsage().rss);
+    console.log(`errors: ${errorCount} connections: ${wsArray.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} memory: ${memory}`);
 }, 1000);
