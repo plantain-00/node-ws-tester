@@ -56,7 +56,7 @@ async function start() {
 
     console.log(message);
 
-    const wss = new WebSocket.Server({ port: config.port, host: config.host });
+    const wss = new WebSocket.Server({ port: config.port, host: config.host, clientTracking: true });
 
     let errorCount = 0;
     let messageCount = 0;
