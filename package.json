@@ -21,9 +21,9 @@
   "homepage": "https://github.com/plantain-00/node-ws-tester#readme",
   "dependencies": {
     "bytes": "2.4.0",
-    "protobufjs": "6.6.3",
-    "uws": "0.12.0",
-    "ws": "2.0.0"
+    "protobufjs": "6.6.4",
+    "uws": "0.13.0",
+    "ws": "2.2.0"
   },
   "devDependencies": {
     "@types/bytes": "2.4.33",
@@ -31,7 +31,7 @@
     "@types/minimist": "1.2.0",
     "@types/uws": "0.0.0",
     "@types/ws": "0.0.38",
-    "tslint": "4.4.2",
-    "typescript": "2.1.5"
+    "tslint": "4.5.1",
+    "typescript": "2.2.1"
   }
 }
