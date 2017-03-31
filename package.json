@@ -20,18 +20,18 @@
   },
   "homepage": "https://github.com/plantain-00/node-ws-tester#readme",
   "dependencies": {
-    "bytes": "2.4.0",
-    "protobufjs": "6.6.4",
-    "uws": "0.13.0",
-    "ws": "2.2.0"
+    "bytes": "2.5.0",
+    "protobufjs": "6.6.5",
+    "uws": "0.14.1",
+    "ws": "2.2.2"
   },
   "devDependencies": {
     "@types/bytes": "2.4.33",
     "@types/long": "3.0.31",
     "@types/minimist": "1.2.0",
-    "@types/uws": "0.0.0",
-    "@types/ws": "0.0.38",
-    "tslint": "4.5.1",
-    "typescript": "2.2.1"
+    "@types/uws": "0.13.0",
+    "@types/ws": "0.0.39",
+    "tslint": "5.0.0",
+    "typescript": "2.2.2"
   }
 }
