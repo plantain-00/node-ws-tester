@@ -4,8 +4,13 @@ import * as fs from "fs";
 import { config } from "./server.config";
 import * as WebSocket from "uws";
 
-console.log(`Listening ${config.host}:${config.port}.`);
-console.log(`Sending ${bytes.format(config.messageLength)} message * ${config.messageCountPerSecond} times per second.`);
+function print(message: string | Buffer) {
+    // tslint:disable-next-line:no-console
+    console.log(message);
+}
+
+print(`Listening ${config.host}:${config.port}.`);
+print(`Sending ${bytes.format(config.messageLength)} message * ${config.messageCountPerSecond} times per second.`);
 
 function readFile() {
     return new Promise<string>((resolve, reject) => {
@@ -43,18 +48,18 @@ async function start() {
     let message: string | Buffer;
 
     if (config.customMessage) {
-        console.log(`Using custom message.`);
+        print(`Using custom message.`);
         message = await readFile();
     } else {
         message = "a".repeat(config.messageLength);
     }
 
     if (config.useProtobuf) {
-        console.log(`Using protobuf.`);
+        print(`Using protobuf.`);
         message = await loadProtobuf(message);
     }
 
-    console.log(message);
+    print(message);
 
     const wss = new WebSocket.Server({ port: config.port, host: config.host, clientTracking: true });
 
@@ -87,12 +92,12 @@ async function start() {
     let timer: NodeJS.Timer;
     if (config.increasePerSecond > 0) {
         if (config.messageCountIncrease > 0) {
-            console.log(`Message increase ${config.messageCountIncrease} times per ${config.increasePerSecond} second.`);
+            print(`Message increase ${config.messageCountIncrease} times per ${config.increasePerSecond} second.`);
             timer = setInterval(() => {
                 config.messageCountPerSecond += config.messageCountIncrease;
             }, 1000 * config.increasePerSecond);
         } else if (config.messageLengthIncrease > 0) {
-            console.log(`Message length ${config.messageLengthIncrease} times per ${config.increasePerSecond} second.`);
+            print(`Message length ${config.messageLengthIncrease} times per ${config.increasePerSecond} second.`);
             timer = setInterval(() => {
                 config.messageLength += config.messageLengthIncrease;
                 message = "a".repeat(config.messageLength);
@@ -105,7 +110,7 @@ async function start() {
             clearInterval(timer);
         }
         const memory = bytes.format(process.memoryUsage().rss);
-        console.log(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${config.messageCountPerSecond} ${config.messageLength} memory: ${memory}`);
+        print(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${config.messageCountPerSecond} ${config.messageLength} memory: ${memory}`);
     }, 1000);
 }
 

@@ -2,7 +2,12 @@ import * as bytes from "bytes";
 import { config } from "./client.config";
 import * as WebSocket from "ws";
 
-console.log(`Connecting to ${config.url} with ${config.connectionCount} times.`);
+function print(message: string | Buffer) {
+    // tslint:disable-next-line:no-console
+    console.log(message);
+}
+
+print(`Connecting to ${config.url} with ${config.connectionCount} times.`);
 
 const wsArray: WebSocket[] = [];
 let errorCount = 0;
@@ -28,7 +33,7 @@ connect(config.connectionCount);
 
 let timer: NodeJS.Timer;
 if (config.connectionCountIncrease > 0 && config.increasePerSecond > 0) {
-    console.log(`Connection increase ${config.connectionCountIncrease} times per ${config.increasePerSecond} second.`);
+    print(`Connection increase ${config.connectionCountIncrease} times per ${config.increasePerSecond} second.`);
     timer = setInterval(() => {
         connect(config.connectionCountIncrease);
     }, 1000 * config.increasePerSecond);
@@ -39,5 +44,5 @@ setInterval(() => {
         clearInterval(timer);
     }
     const memory = bytes.format(process.memoryUsage().rss);
-    console.log(`errors: ${errorCount} connections: ${wsArray.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} memory: ${memory}`);
+    print(`errors: ${errorCount} connections: ${wsArray.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} memory: ${memory}`);
 }, 1000);
