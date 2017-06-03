@@ -23,7 +23,6 @@
   "dependencies": {
     "bytes": "2.5.0",
     "protobufjs": "6.7.3",
-    "tslib": "1.7.1",
     "uws": "0.14.5",
     "ws": "3.0.0"
   },
