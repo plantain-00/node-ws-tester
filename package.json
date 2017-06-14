@@ -34,6 +34,6 @@
     "@types/ws": "0.0.41",
     "rimraf": "2.6.1",
     "tslint": "5.4.0",
-    "typescript": "2.3.4"
+    "typescript": "2.4.0"
   }
 }
