@@ -8,7 +8,8 @@
     "lint": "tslint \"src/*.ts\"",
     "start-client": "node dist/client.js --nouse-idle-notification --expose-gc --max-old-space-size 8192",
     "start-server": "node dist/server.js --nouse-idle-notification --expose-gc --max-old-space-size 8192",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "test": "tsc -p spec && jasmine"
   },
   "repository": {
     "type": "git",
@@ -28,10 +29,12 @@
   },
   "devDependencies": {
     "@types/bytes": "2.5.0",
+    "@types/jasmine": "2.5.53",
     "@types/long": "3.0.31",
     "@types/minimist": "1.2.0",
     "@types/uws": "0.13.0",
     "@types/ws": "3.0.0",
+    "jasmine": "2.6.0",
     "rimraf": "2.6.1",
     "tslint": "5.4.3",
     "typescript": "2.4.1"
