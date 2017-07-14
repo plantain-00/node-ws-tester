@@ -4,6 +4,12 @@
 
 # node-ws-tester
 
+### install
+
+```bash
+git clone https://github.com/plantain-00/node-ws-tester-release.git . --depth=1 && npm i --production
+```
+
 ### steps
 
 1. start a server: `npm run start-server`
