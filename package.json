@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && tsc -p src",
-    "lint": "tslint \"src/*.ts\"",
     "start-client": "node dist/client.js --nouse-idle-notification --expose-gc --max-old-space-size 8192",
     "start-server": "node dist/server.js --nouse-idle-notification --expose-gc --max-old-space-size 8192",
-    "clean": "rimraf dist",
-    "test": "tsc -p spec && jasmine",
-    "release": "clean-release"
+    "build": "clean-scripts build",
+    "lint": "clean-scripts lint",
+    "test": "clean-scripts test",
+    "fix": "clean-scripts fix",
+    "release": "clean-scripts release"
   },
   "repository": {
     "type": "git",
@@ -36,8 +36,10 @@
     "@types/uws": "0.13.0",
     "@types/ws": "3.0.0",
     "clean-release": "1.1.1",
+    "clean-scripts": "1.0.0",
     "jasmine": "2.6.0",
     "rimraf": "2.6.1",
+    "standard": "10.0.2",
     "tslint": "5.4.3",
     "typescript": "2.4.1"
   }
