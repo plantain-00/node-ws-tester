@@ -68,7 +68,7 @@ async function start() {
     let messageTotalLength = 0;
 
     wss.on("connection", ws => {
-        const timer = setInterval(() => {
+        const connectionTimer = setInterval(() => {
             for (let i = 0; i < config.messageCountPerSecond; i++) {
                 ws.send(message, { binary: config.useProtobuf }, error => {
                     if (error) {
@@ -81,7 +81,7 @@ async function start() {
             }
         }, 1000);
         ws.on("close", () => {
-            clearInterval(timer);
+            clearInterval(connectionTimer);
         });
     }).on("error", error => {
         if (error) {
@@ -89,16 +89,16 @@ async function start() {
         }
     });
 
-    let timer: NodeJS.Timer;
+    let messageTimer: NodeJS.Timer;
     if (config.increasePerSecond > 0) {
         if (config.messageCountIncrease > 0) {
             print(`Message increase ${config.messageCountIncrease} times per ${config.increasePerSecond} second.`);
-            timer = setInterval(() => {
+            messageTimer = setInterval(() => {
                 config.messageCountPerSecond += config.messageCountIncrease;
             }, 1000 * config.increasePerSecond);
         } else if (config.messageLengthIncrease > 0) {
             print(`Message length ${config.messageLengthIncrease} times per ${config.increasePerSecond} second.`);
-            timer = setInterval(() => {
+            messageTimer = setInterval(() => {
                 config.messageLength += config.messageLengthIncrease;
                 message = "a".repeat(config.messageLength);
             }, 1000 * config.increasePerSecond);
@@ -106,8 +106,8 @@ async function start() {
     }
 
     setInterval(() => {
-        if (timer && errorCount > 0) {
-            clearInterval(timer);
+        if (messageTimer && errorCount > 0) {
+            clearInterval(messageTimer);
         }
         const memory = bytes.format(process.memoryUsage().rss);
         print(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${config.messageCountPerSecond} ${config.messageLength} memory: ${memory}`);
