@@ -4,13 +4,13 @@ import * as fs from "fs";
 import { config } from "./server.config";
 import * as WebSocket from "uws";
 
-function print(message: string | Buffer) {
+function printInConsole(message: any) {
     // tslint:disable-next-line:no-console
     console.log(message);
 }
 
-print(`Listening ${config.host}:${config.port}.`);
-print(`Sending ${bytes.format(config.messageLength)} message * ${config.messageCountPerSecond} times per second.`);
+printInConsole(`Listening ${config.host}:${config.port}.`);
+printInConsole(`Sending ${bytes.format(config.messageLength)} message * ${config.messageCountPerSecond} times per second.`);
 
 function readFile() {
     return new Promise<string>((resolve, reject) => {
@@ -30,13 +30,13 @@ function readFile() {
 }
 
 function loadProtobuf(message: any) {
-    return new Promise<Buffer>((resolve, reject) => {
+    return new Promise<Uint8Array>((resolve, reject) => {
         (ProtoBuf.load("./message.proto") as Promise<ProtoBuf.Root>).then(root => {
             const Message = root.lookup("messagePackage.Message") as ProtoBuf.Type;
             if (config.customMessage) {
-                resolve(Message.encode(message).finish() as any as Buffer);
+                resolve(Message.encode(message).finish());
             } else {
-                resolve(Message.encode({ data: message }).finish() as any as Buffer);
+                resolve(Message.encode({ data: message }).finish());
             }
         }, error => {
             reject(error);
@@ -45,21 +45,21 @@ function loadProtobuf(message: any) {
 }
 
 async function start() {
-    let message: string | Buffer;
+    let message: string | Uint8Array;
 
     if (config.customMessage) {
-        print(`Using custom message.`);
+        printInConsole(`Using custom message.`);
         message = await readFile();
     } else {
         message = "a".repeat(config.messageLength);
     }
 
     if (config.useProtobuf) {
-        print(`Using protobuf.`);
+        printInConsole(`Using protobuf.`);
         message = await loadProtobuf(message);
     }
 
-    print(message);
+    printInConsole(message);
 
     const wss = new WebSocket.Server({ port: config.port, host: config.host, clientTracking: true });
 
@@ -92,12 +92,12 @@ async function start() {
     let messageTimer: NodeJS.Timer;
     if (config.increasePerSecond > 0) {
         if (config.messageCountIncrease > 0) {
-            print(`Message increase ${config.messageCountIncrease} times per ${config.increasePerSecond} second.`);
+            printInConsole(`Message increase ${config.messageCountIncrease} times per ${config.increasePerSecond} second.`);
             messageTimer = setInterval(() => {
                 config.messageCountPerSecond += config.messageCountIncrease;
             }, 1000 * config.increasePerSecond);
         } else if (config.messageLengthIncrease > 0) {
-            print(`Message length ${config.messageLengthIncrease} times per ${config.increasePerSecond} second.`);
+            printInConsole(`Message length ${config.messageLengthIncrease} times per ${config.increasePerSecond} second.`);
             messageTimer = setInterval(() => {
                 config.messageLength += config.messageLengthIncrease;
                 message = "a".repeat(config.messageLength);
@@ -110,7 +110,7 @@ async function start() {
             clearInterval(messageTimer);
         }
         const memory = bytes.format(process.memoryUsage().rss);
-        print(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${config.messageCountPerSecond} ${config.messageLength} memory: ${memory}`);
+        printInConsole(`errors: ${errorCount} connections: ${wss.clients.length} messages: ${bytes.format(messageTotalLength)} ${messageCount} ${config.messageCountPerSecond} ${config.messageLength} memory: ${memory}`);
     }, 1000);
 }
 
